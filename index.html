@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kingdom of Keys</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ===== Title ===== -->
+    <section id="screen-title" class="screen active">
+      <div class="title-card">
+        <div class="logo">
+          <div class="logo-sword">🗡️</div>
+          <h1>Kingdom<br><span>of Keys</span></h1>
+          <p class="tagline">A typing quest for a brave young hero</p>
+        </div>
+        <label class="name-label" for="hero-name">What is our hero's name?</label>
+        <input id="hero-name" maxlength="14" autocomplete="off" spellcheck="false" value="Zayaan">
+        <button id="btn-start" class="btn big gold">Begin the Quest ▶</button>
+        <p class="hint">Tip: use a real keyboard and sit up tall!</p>
+      </div>
+    </section>
+
+    <!-- ===== World Map ===== -->
+    <section id="screen-map" class="screen">
+      <header class="topbar">
+        <div class="who"><span id="map-name">Hero</span>'s Quest</div>
+        <div class="stats">
+          <span class="pill"><span class="gem-icon"></span><b id="map-gems">0</b></span>
+          <span class="pill">⭐ <b id="map-stars">0</b></span>
+          <span class="pill">⚡ Best <b id="map-best">0</b> WPM</span>
+        </div>
+        <div class="actions">
+          <button class="btn small" id="btn-trial">⚡ Speed Trial</button>
+          <button class="btn small" id="btn-shop">🛡️ Shop</button>
+          <button class="btn small ghost" id="btn-parent">👪 Parents</button>
+        </div>
+      </header>
+      <div class="map-body">
+        <div id="region-list" class="region-list"></div>
+        <div class="region-detail">
+          <h2 id="region-title"></h2>
+          <p id="region-sub" class="muted"></p>
+          <div id="lesson-list" class="lesson-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Play ===== -->
+    <section id="screen-play" class="screen">
+      <header class="playbar">
+        <button class="btn small ghost" id="btn-quit">✕ Map</button>
+        <div id="play-title" class="play-title"></div>
+        <div class="play-stats">
+          <span id="live-acc">100%</span> correct · <span id="live-wpm">0</span> WPM
+        </div>
+      </header>
+      <div class="stage">
+        <canvas id="game" width="960" height="320"></canvas>
+        <div id="pip" class="pip hidden"><span class="pip-face">✨</span><span id="pip-text"></span></div>
+        <div id="overlay" class="overlay hidden"></div>
+      </div>
+      <div id="target" class="target"></div>
+      <div class="kb-area">
+        <div id="keyboard" class="keyboard"></div>
+        <div class="hands-wrap">
+          <svg id="hands" viewBox="0 0 420 170"></svg>
+          <div id="finger-label" class="finger-label">&nbsp;</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Results ===== -->
+    <section id="screen-results" class="screen">
+      <div class="panel results">
+        <h2 id="res-title">Victory!</h2>
+        <div id="res-stars" class="stars"></div>
+        <div class="res-grid">
+          <div><div class="big-num" id="res-wpm">0</div><div class="muted">words per minute</div></div>
+          <div><div class="big-num" id="res-acc">0%</div><div class="muted">correct</div></div>
+          <div><div class="big-num" id="res-gems">0</div><div class="muted">gems found</div></div>
+        </div>
+        <p id="res-msg" class="res-msg"></p>
+        <p id="res-tricky" class="muted"></p>
+        <div class="row">
+          <button class="btn" id="btn-retry">↻ Try Again</button>
+          <button class="btn gold" id="btn-next">Next Quest ▶</button>
+          <button class="btn ghost" id="btn-map">World Map</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Shop ===== -->
+    <section id="screen-shop" class="screen">
+      <div class="panel shop">
+        <div class="shop-head">
+          <h2>Wandering Merchant</h2>
+          <span class="pill"><span class="gem-icon"></span><b id="shop-gems">0</b></span>
+        </div>
+        <div class="shop-preview"><canvas id="shop-canvas" width="200" height="140"></canvas></div>
+        <h3>Tunics</h3>
+        <div id="shop-tunics" class="shop-grid"></div>
+        <h3>Swords</h3>
+        <div id="shop-swords" class="shop-grid"></div>
+        <div class="row"><button class="btn" id="btn-shop-back">◀ Back to Map</button></div>
+      </div>
+    </section>
+
+    <!-- ===== Parents ===== -->
+    <section id="screen-parent" class="screen">
+      <div class="panel parent">
+        <h2>Parent Corner</h2>
+        <div class="parent-grid">
+          <div class="card">
+            <h3>Progress</h3>
+            <div id="p-summary"></div>
+            <canvas id="p-chart" width="460" height="180"></canvas>
+            <p class="muted small-txt">Speed (WPM) over the last sessions. Accuracy first, speed second — aim for 90%+ correct before pushing speed.</p>
+          </div>
+          <div class="card">
+            <h3>Tricky Keys</h3>
+            <div id="p-keys" class="p-keys"></div>
+            <p class="muted small-txt">Keys missed most often. The game automatically practices these more.</p>
+          </div>
+          <div class="card">
+            <h3>Settings</h3>
+            <label class="set">Challenge
+              <select id="set-diff">
+                <option value="gentle">Gentle — monsters wait, no damage</option>
+                <option value="normal">Normal — adapts to speed</option>
+                <option value="hard">Hero — faster monsters</option>
+              </select>
+            </label>
+            <label class="set">Keyboard hints
+              <select id="set-hints">
+                <option value="auto">Auto — fade as he learns</option>
+                <option value="always">Always show next key</option>
+                <option value="delayed">Only after a pause</option>
+              </select>
+            </label>
+            <label class="set chk"><input type="checkbox" id="set-sound"> Sound effects</label>
+            <label class="set chk"><input type="checkbox" id="set-voice"> Fairy voice (reads instructions aloud)</label>
+            <label class="set chk"><input type="checkbox" id="set-unlock"> Unlock all lessons</label>
+            <button class="btn small danger" id="btn-reset">Reset all progress</button>
+          </div>
+          <div class="card">
+            <h3>Lessons</h3>
+            <div id="p-lessons" class="p-lessons"></div>
+          </div>
+        </div>
+        <div class="row"><button class="btn" id="btn-parent-back">◀ Back to Map</button></div>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/sprites.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
